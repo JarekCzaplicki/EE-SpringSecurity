@@ -1,6 +1,8 @@
 package com.eespringsecurity.security;
+import com.eespringsecurity.dbauth.ApplicationUserService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -23,9 +25,11 @@ import static com.eespringsecurity.security.ApplicationUserRole.*;
 public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final PasswordEncoder passwordEncoder;
+    private final ApplicationUserService applicationUserService;
 
-    public ApplicationSecurityConfig(PasswordEncoder passwordEncoder) {
+    public ApplicationSecurityConfig(PasswordEncoder passwordEncoder, ApplicationUserService applicationUserService) {
         this.passwordEncoder = passwordEncoder;
+        this.applicationUserService = applicationUserService;
     }
 
     @Override
@@ -61,33 +65,41 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
         ;
     }
 
-    @Override
     @Bean
-    protected UserDetailsService userDetailsService() {
-        UserDetails student = User.builder()
-                .username("student")
-                .password(passwordEncoder.encode( "123456"))
-                .roles(STUDENT.name())
-                .authorities(STUDENT.getGrantedAuthorities())
-                .build();
-        UserDetails old = User.builder()
-                .username("old")
-                .password(passwordEncoder.encode( "123456"))
-//                .roles(OLD_STUDENT.name())
-                .authorities(OLD_STUDENT.getGrantedAuthorities())
-                .build();
-        UserDetails admin = User.builder()
-                .username("admin")
-                .password(passwordEncoder.encode( "123456"))
-//                .roles(ADMIN.name())
-                .authorities(ADMIN.getGrantedAuthorities())
-                .build();
-        UserDetails verb = User.builder()
-                .username("verb")
-                .password(passwordEncoder.encode( "123456"))
-//                .roles(ADMIN.name())
-                .authorities(HTTP_VERBS.getGrantedAuthorities())
-                .build();
-        return new InMemoryUserDetailsManager(admin, student, old, verb);
+    public DaoAuthenticationProvider daoAuthenticationProvider() {
+        DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
+        provider.setPasswordEncoder(passwordEncoder);
+        provider.setUserDetailsService(applicationUserService);
+        return provider;
     }
+//
+//    @Override
+//    @Bean
+//    protected UserDetailsService userDetailsService() {
+//        UserDetails student = User.builder()
+//                .username("student")
+//                .password(passwordEncoder.encode( "123456"))
+//                .roles(STUDENT.name())
+//                .authorities(STUDENT.getGrantedAuthorities())
+//                .build();
+//        UserDetails old = User.builder()
+//                .username("old")
+//                .password(passwordEncoder.encode( "123456"))
+////                .roles(OLD_STUDENT.name())
+//                .authorities(OLD_STUDENT.getGrantedAuthorities())
+//                .build();
+//        UserDetails admin = User.builder()
+//                .username("admin")
+//                .password(passwordEncoder.encode( "123456"))
+////                .roles(ADMIN.name())
+//                .authorities(ADMIN.getGrantedAuthorities())
+//                .build();
+//        UserDetails verb = User.builder()
+//                .username("verb")
+//                .password(passwordEncoder.encode( "123456"))
+////                .roles(ADMIN.name())
+//                .authorities(HTTP_VERBS.getGrantedAuthorities())
+//                .build();
+//        return new InMemoryUserDetailsManager(admin, student, old, verb);
+//    }
 }
