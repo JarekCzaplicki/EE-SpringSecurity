@@ -16,7 +16,7 @@ public class StudentManagementController {
             new Student(3, "S3")
     );
 
-//    @PreAuthorize() przyjmuje
+//    @PreAuthorize()
 //    - hasRole('ROLE_ADMIN')
 //    - hasAnyRole('ROLE_ADMIN', 'ROLE_STUDENT')
 //    - hasAuthority('student:write')
