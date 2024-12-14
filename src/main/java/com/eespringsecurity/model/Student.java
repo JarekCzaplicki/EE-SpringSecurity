@@ -1,4 +1,4 @@
-package model;
+package com.eespringsecurity.model;
 
 public class Student {
 

@@ -1,6 +1,6 @@
-package controller;
+package com.eespringsecurity.controller;
 
-import model.Student;
+import com.eespringsecurity.model.Student;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
